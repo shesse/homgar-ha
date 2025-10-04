@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 import voluptuous as vol
@@ -35,9 +36,9 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     # )
 
     def connect(username: str, password: str) -> bool:
-        LOGGER.info("Connecting to Homgar API")
+        LOGGER.debug("Connecting to Homgar API")
         HomgarApiWrapper(username, password).authenticate()
-        LOGGER.info("Success connecting to Homgar API")
+        LOGGER.debug("Success connecting to Homgar API")
         return True
 
     if not await hass.async_add_executor_job(
@@ -46,7 +47,8 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         LOGGER.warning("Invalid authentication!")
         raise InvalidAuth
 
-    LOGGER.info("Success for validate_input")
+    LOGGER.debug("Success for validate_input")
+    await asyncio.sleep(3)
 
     # Return info that you want to store in the config entry.
     return {"title": "Homgar Account"}

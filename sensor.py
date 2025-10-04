@@ -10,7 +10,7 @@ from homeassistant.components.sensor import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.util.dt import DEFAULT_TIME_ZONE  # noqa: D100
+from homeassistant.util.dt import DEFAULT_TIME_ZONE
 
 from . import HomgarConfigEntry
 from .api_wrapper import HomgarApiWrapper
@@ -25,7 +25,7 @@ class HomgarWaterflowSensorBase(SensorEntity):
     ) -> None:
         """Initialize a sensor for a HomGar device."""
 
-        LOGGER.info("HomgarSensorBase %s init", attr)
+        LOGGER.debug("HomgarSensorBase %s init", attr)
         self._apiWrapper = apiWrapper
         self._hid = hid
         self._mid = mid
@@ -74,7 +74,7 @@ class HomgarWaterflowSensorBase(SensorEntity):
 
     def update(self) -> None:
         """Update device state."""
-        LOGGER.info("Poll has been called")
+        LOGGER.debug("Poll has been called")
 
         self._apiWrapper.poll()
 
@@ -143,21 +143,21 @@ async def async_setup_entry(
 ) -> None:
     """Set up Homgar sensor devices."""
 
-    LOGGER.info("Homgar async_setup_entry")
+    LOGGER.debug("Homgar async_setup_entry")
     await hass.async_add_executor_job(
         entry.runtime_data.poll,
     )
-    LOGGER.info("Initial Homgar poll done")
+    LOGGER.debug("Initial Homgar poll done")
 
-    LOGGER.info("Hass TZ=%s", DEFAULT_TIME_ZONE)
+    LOGGER.debug("Hass TZ=%s", DEFAULT_TIME_ZONE)
 
     device_registry = dr.async_get(hass)
 
     entities = []
     for hid, hubs in entry.runtime_data.homes.items():
-        LOGGER.info("Setup hid=%s", hid)
+        LOGGER.debug("Setup hid=%s", hid)
         for mid, devices in hubs.items():
-            LOGGER.info("Setup mid=%s", mid)
+            LOGGER.debug("Setup mid=%s", mid)
             device_registry.async_get_or_create(
                 config_entry_id=entry.entry_id,
                 identifiers={(DOMAIN, f"hub {mid}")},
@@ -167,7 +167,7 @@ async def async_setup_entry(
             )
             for address, device in devices.items():
                 if device.FRIENDLY_DESC == "Water Flow Meter":
-                    LOGGER.info("Setup address=%s", address)
+                    LOGGER.debug("Setup address=%s", address)
                     entities.append(
                         HomgarWaterflowSensorTotalUsage(
                             entry.runtime_data, hid, mid, address
@@ -184,10 +184,10 @@ async def async_setup_entry(
                         )
                     )
                 else:
-                    LOGGER.info(
+                    LOGGER.debug(
                         "Skipping address=%s, desc=%s",
                         address,
                         device.FRIENDLY_DESC,
                     )
     async_add_entities(entities)
-    LOGGER.info("Found a total of %d sensors", len(entities))
+    LOGGER.debug("Found a total of %d sensors", len(entities))

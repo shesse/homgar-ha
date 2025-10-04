@@ -1,7 +1,7 @@
 import time  # noqa: D100
 
-from .const import LOGGER  # noqa: D100
-from .homgarapi.api import HomgarApi, HomgarApiException  # noqa: D100
+from .const import LOGGER
+from .homgarapi.api import HomgarApi, HomgarApiException
 
 
 class HomgarApiWrapper:
@@ -37,23 +37,23 @@ class HomgarApiWrapper:
         if now - self.last_poll < 120:
             return
 
-        LOGGER.info("Polling Homgar API")
+        LOGGER.debug("Polling Homgar API")
         self.last_poll = now
 
         try:
             self.authenticate()
             api = self.api
             for home in api.get_homes():
-                LOGGER.info("Home: %s %s", home.hid, home.name)
+                LOGGER.debug("Home: %s %s", home.hid, home.name)
                 hubs = {}
                 self.homes[home.hid] = hubs
                 for hub in api.get_devices_for_hid(home.hid):
-                    LOGGER.info("  - %s", hub)
+                    LOGGER.debug("  - %s", hub)
                     subdevs = {}
                     hubs[hub.mid] = subdevs
                     api.get_device_status(hub)
                     for subdevice in hub.subdevices:
-                        LOGGER.info("    %s", subdevice.name)
+                        LOGGER.debug("    %s", subdevice.name)
                         subdevs[subdevice.address] = subdevice
         except HomgarApiException as ex:
             LOGGER.error("Error polling Homgar API: %s", ex)
