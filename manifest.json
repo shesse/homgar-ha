@@ -1,0 +1,14 @@
+{
+  "domain": "homgar",
+  "name": "HomGar",
+  "version": "1.0.0",
+  "codeowners": ["@shesse"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/homgar",
+  "homekit": {},
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": []
+}
