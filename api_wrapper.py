@@ -16,7 +16,8 @@ class HomgarApiWrapper:
         self.homes = {}
         self.last_poll = 0
         self.available = True
-        self.api = HomgarApi({})
+        LOGGER.debug("Creating new HomgarApi")
+        self.api = HomgarApi()
 
     def authenticate(self):
         """Connect to API."""
@@ -26,6 +27,8 @@ class HomgarApiWrapper:
         except HomgarApiException as ex:
             LOGGER.error("Error authenticating to Homgar API: %s", ex)
             self.available = False
+            LOGGER.debug("Creating new HomgarApi because of error")
+            self.api = HomgarApi()
             raise ex from None
         else:
             self.available = True
@@ -58,6 +61,8 @@ class HomgarApiWrapper:
         except HomgarApiException as ex:
             LOGGER.error("Error polling Homgar API: %s", ex)
             self.available = False
+            LOGGER.debug("Creating new HomgarApi because of error")
+            self.api = HomgarApi()
             raise ex from None
         else:
             self.available = True

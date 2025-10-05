@@ -10,5 +10,6 @@
   "iot_class": "cloud_polling",
   "requirements": [],
   "ssdp": [],
-  "zeroconf": []
+  "zeroconf": [],
+  "loggers": ["custom_components.homgar.const"]
 }
